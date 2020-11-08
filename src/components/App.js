@@ -36,11 +36,11 @@ function App() {
   const history = useHistory();
 
   function tokenCheck() {
-    const jwt = localStorage.getItem("token");
-    if (!jwt) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       return;
     }
-    auth.getContent(jwt).then((res) => {
+    auth.getContent(token).then((res) => {
       if (res) {
         setLoggedIn(true);
         setEmail(res.data.email);
@@ -50,15 +50,15 @@ function App() {
   }
 
   function handleLogin(password, email) {
-    auth.authorize(password, email).then((data) => {
-      if (!data) {
+    auth.authorize(password, email).then((res) => {
+      if (!res) {
         setisInfoTooltipOpen(true);
         setInfoTooltipImage(ErrorImage);
         setMessage("Что-то пошло не так! Попробуйте ещё раз.");
       }
-      if (data.jwt) {
+      if (res.token) {
         setLoggedIn(true);
-        setEmail(data.res.email);
+        setEmail(email);
         history.push("/");
       }
     });
