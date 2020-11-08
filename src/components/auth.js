@@ -48,10 +48,10 @@ export const authorize = (password, email) => {
       }
       return res.json();
     })
-    .then((res) => {
-      if (res.token) {
-        localStorage.setItem("token", res.token);
-        return res;
+    .then((data) => {
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        return data;
       } else {
         return;
       }

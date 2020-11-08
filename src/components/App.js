@@ -50,13 +50,13 @@ function App() {
   }
 
   function handleLogin(password, email) {
-    auth.authorize(password, email).then((res) => {
-      if (!res) {
+    auth.authorize(password, email).then((data) => {
+      if (!data) {
         setisInfoTooltipOpen(true);
         setInfoTooltipImage(ErrorImage);
         setMessage("Что-то пошло не так! Попробуйте ещё раз.");
       }
-      if (res.token) {
+      if (data.token) {
         setLoggedIn(true);
         setEmail(email);
         history.push("/");
