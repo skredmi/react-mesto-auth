@@ -13,10 +13,7 @@ export const register = (password, email) => {
       if (res.ok) {
         return res.json();
       }
-      return Promise.reject({
-        status: 400,
-        message: "Некорректно заполнено одно из полей",
-      });
+      return Promise.reject(res.status);
     })
     .then((res) => {
       return res;
@@ -33,20 +30,10 @@ export const authorize = (password, email) => {
     body: JSON.stringify({ password, email }),
   })
     .then((res) => {
-      if (!res.ok) {
-        if (res.status === 400) {
-          return Promise.reject({
-            status: 400,
-            message: "Не передано одно из полей",
-          });
-        } else if (res.status === 401) {
-          return Promise.reject({
-            status: 401,
-            message: "Пользователь с таким email не найден",
-          });
-        }
+      if (res.ok) {
+        return res.json();
       }
-      return res.json();
+      return Promise.reject(res.status);
     })
     .then((data) => {
       if (data.token) {
@@ -71,16 +58,7 @@ export const getContent = (token) => {
       if (res.ok) {
         return res.json();
       }
-      return Promise.reject(
-        {
-          status: 401,
-          message: "Токен не передан или передан не в том формате",
-        },
-        {
-          status: 401,
-          message: "Переданный токен некорректен",
-        }
-      );
+      return Promise.reject(res.status);
     })
     .then((res) => res)
     .then((data) => data);

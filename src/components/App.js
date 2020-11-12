@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import { CurrentUserContext } from "../context/CurrentUserContext";
 import { api } from "../utils/api";
-import * as auth from "./auth.js";
+import * as auth from "../utils/auth.js";
 import Header from "./Header";
 import Footer from "./Footer";
 import Main from "./Main";
@@ -40,43 +40,67 @@ function App() {
     if (!token) {
       return;
     }
-    auth.getContent(token).then((res) => {
-      if (res) {
-        setLoggedIn(true);
-        setEmail(res.data.email);
-        history.push("/");
-      }
-    });
+    auth
+      .getContent(token)
+      .then((res) => {
+        if (res) {
+          setLoggedIn(true);
+          setEmail(res.data.email);
+          history.push("/");
+        }
+      })
+      .catch((err) => {
+        if (err === 401) {
+          console.log("Переданный токен некорректен");
+          localStorage.removeItem("token");
+        }
+      });
   }
 
   function handleLogin(password, email) {
-    auth.authorize(password, email).then((data) => {
-      if (!data) {
-        setisInfoTooltipOpen(true);
-        setInfoTooltipImage(ErrorImage);
-        setMessage("Что-то пошло не так! Попробуйте ещё раз.");
-      }
-      if (data.token) {
-        setLoggedIn(true);
-        setEmail(email);
-        history.push("/");
-      }
-    });
+    auth
+      .authorize(password, email)
+      .then((data) => {
+        if (!data) {
+          setisInfoTooltipOpen(true);
+          setInfoTooltipImage(ErrorImage);
+          setMessage("Что-то пошло не так! Попробуйте ещё раз.");
+        }
+        if (data.token) {
+          setLoggedIn(true);
+          setEmail(email);
+          history.push("/");
+        }
+      })
+      .catch((err) => {
+        if (err === 400) {
+          console.log("не передано одно из полей");
+        } else if (err === 401) {
+          console.log("пользователь с email не найден");
+        }
+      });
   }
 
   function handleRegister(password, email) {
-    auth.register(password, email).then((res) => {
-      if (res.statusCode !== 400) {
-        history.push("/sign-in");
-        setisInfoTooltipOpen(true);
-        setInfoTooltipImage(OkImage);
-        setMessage("Вы успешно зарегистрировались!");
-      } else {
-        setisInfoTooltipOpen(true);
-        setInfoTooltipImage(ErrorImage);
-        setMessage("Что-то пошло не так! Попробуйте ещё раз.");
-      }
-    });
+    auth
+      .register(password, email)
+      .then((res) => {
+        if (res.statusCode !== 400) {
+          history.push("/sign-in");
+          setisInfoTooltipOpen(true);
+          setInfoTooltipImage(OkImage);
+          setMessage("Вы успешно зарегистрировались!");
+        } else {
+          setisInfoTooltipOpen(true);
+          setInfoTooltipImage(ErrorImage);
+          setMessage("Что-то пошло не так! Попробуйте ещё раз.");
+        }
+      })
+      .catch((err) => {
+        if (err === 400) {
+          console.log("некорректно заполнено одно из полей");
+        }
+      });
   }
 
   function logOut() {
@@ -217,8 +241,15 @@ function App() {
       }
     };
     document.addEventListener("keydown", handleClosePopupEsc);
+    const handleClosePopupOverlay = (evt) => {
+      if (evt.target.classList.contains('popup_opened')) {
+        closeAllPopups();
+      }
+    };
+    document.addEventListener("click", handleClosePopupOverlay);
     return () => {
       document.removeEventListener("keydown", handleClosePopupEsc);
+      document.addEventListener("click", handleClosePopupOverlay);
     };
   }, []);
 
