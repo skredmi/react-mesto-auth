@@ -1,12 +1,12 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../images/logo.svg";
 
-function Header(props) {
+function Header({ loggedIn, onLogOut, email }) {
   let location = useLocation().pathname;
   const [linkLog, setLinkLog] = React.useState("/sign-in");
   const [position, setPosition] = React.useState("");
-  const { loggedIn, onLogOut, email } = props;
 
   React.useEffect(() => {
     if (location === "/sign-up") {
@@ -36,5 +36,11 @@ function Header(props) {
     </header>
   );
 }
+
+Header.propTypes = {
+  loggedIn: PropTypes.bool.isRequired,
+  onLogOut: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
+};
 
 export default Header;

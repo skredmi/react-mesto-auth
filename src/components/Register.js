@@ -1,8 +1,8 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function Register(props) {
-  const { onRegister } = props;
+function Register({ onRegister }) {
   const [data, setData] = React.useState({
     email: "",
     password: "",
@@ -67,5 +67,9 @@ function Register(props) {
     </form>
   );
 }
+
+Register.propTypes = {
+  onRegister: PropTypes.func.isRequired,
+};
 
 export default Register;
