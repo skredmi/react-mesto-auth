@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { CardType } from "../utils/types";
 
 function ImagePopup({ card, onClose }) {
   return (
@@ -22,14 +23,7 @@ function ImagePopup({ card, onClose }) {
 }
 
 ImagePopup.propTypes = {
-  card: PropTypes.shape({
-    owner: PropTypes.shape({ _id: PropTypes.string.isRequired }).isRequired,
-    likes: PropTypes.arrayOf(
-      PropTypes.shape({ _id: PropTypes.string.isRequired })
-    ).isRequired,
-    link: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  }),
+  card: CardType,
   onClose: PropTypes.func.isRequired,
 };
 

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import PopupWithForm from "./PopupWithForm";
+import { CardType } from "../utils/types";
 
 function ConfirmDeleteCardPopup({ card, isOpen, onClose, onDelete }) {
   function handleSubmit(evt) {
@@ -21,14 +22,7 @@ function ConfirmDeleteCardPopup({ card, isOpen, onClose, onDelete }) {
 }
 
 ConfirmDeleteCardPopup.propTypes = {
-  card: PropTypes.shape({
-    owner: PropTypes.shape({ _id: PropTypes.string.isRequired }).isRequired,
-    likes: PropTypes.arrayOf(
-      PropTypes.shape({ _id: PropTypes.string.isRequired })
-    ).isRequired,
-    link: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  }),
+  card: CardType,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
